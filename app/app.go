@@ -68,7 +68,6 @@ func writeResponse(w http.ResponseWriter, code int, data interface{}) {
 	if err := json.NewEncoder(w).Encode(data); err != nil {
 		logger.Panic(err.Error())
 	}
-
 }
 
 func Start() {
@@ -77,23 +76,16 @@ func Start() {
 
 	// repository initialization
 	client := createDbPool()
-	userRepositoryDb := domain.NewUserRepositoryDb(client)
-	// accountRepositoryDb := domain.NewAccountRepositoryDb(client)
-	// transactionRepositoryDb := domain.SetTransactionRepositoryDb(client)
+	userRepositoryDb := domain.NewAuthRepositoryDb(client)
 
 	// handler initialization
-	uh := UserHandler{service.NewUserService(userRepositoryDb)}
-	// ah := AccountHandlers{service.NewAccountService(accountRepositoryDb)}
-	// th := TransactionHandler{service.SetTransactionService(transactionRepositoryDb)}
+	uh := AuthHandler{service.NewAuthService(userRepositoryDb)}
 
 	// routes
-	router.HandleFunc("/login", uh.VerifyUser).Methods(http.MethodPost)
-	// router.HandleFunc("/customers/{customer_id:[0-9]+}", ch.GetCustomerById).Methods(http.MethodGet)
-	// router.HandleFunc("/customers/{customer_id:[0-9]+}/account", ah.CreateNewAccount).Methods(http.MethodPost)
-
-	// router.HandleFunc("/transaction", th.CreateTransaction).Methods(http.MethodPost)
+	router.HandleFunc("/login", uh.HandleLogin).Methods(http.MethodPost)
 
 	// server
+	logger.Info(fmt.Sprintf("application listening in %s:%s", os.Getenv("APP_ADDRESS"), os.Getenv("APP_PORT")))
 	err := http.ListenAndServe(fmt.Sprintf("%s:%s", os.Getenv("APP_ADDRESS"), os.Getenv("APP_PORT")), router)
 	if err != nil {
 		logger.Panic(err.Error())
