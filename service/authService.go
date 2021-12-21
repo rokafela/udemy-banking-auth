@@ -18,15 +18,10 @@ func NewAuthService(userRepo domain.AuthRepositoryDb) DefaultAuthService {
 
 type AuthService interface {
 	Login(*dto.LoginRequest) (*dto.LoginResponse, *errs.AppError)
+	Verify(*dto.VerifyRequest) *errs.AppError
 }
 
 func (dus DefaultAuthService) Login(login_request *dto.LoginRequest) (*dto.LoginResponse, *errs.AppError) {
-	// validate param
-	err := login_request.Validate()
-	if err != nil {
-		return nil, err
-	}
-
 	// validate credetential
 	found_user, err := dus.UserRepo.FindUserByCredential(&login_request.Username, &login_request.Password)
 	if err != nil {
@@ -41,8 +36,18 @@ func (dus DefaultAuthService) Login(login_request *dto.LoginRequest) (*dto.Login
 		return nil, err
 	}
 
+	// token generated, save to db
+	err = dus.UserRepo.SaveToken(&authToken)
+	if err != nil {
+		return nil, err
+	}
+
 	response := dto.LoginResponse{
 		Token: authToken,
 	}
 	return &response, nil
+}
+
+func (dus DefaultAuthService) Verify(verif_request *dto.VerifyRequest) *errs.AppError {
+	return nil
 }

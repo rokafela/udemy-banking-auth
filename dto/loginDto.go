@@ -3,8 +3,8 @@ package dto
 import "github.com/rokafela/udemy-banking-auth/errs"
 
 type LoginRequest struct {
-	Username string `validate:"nonzero"`
-	Password string `validate:"nonzero"`
+	Username string `validate:"required,alphanum"`
+	Password string `validate:"required,alphanum"`
 }
 
 type LoginResponse struct {

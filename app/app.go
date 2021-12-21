@@ -7,6 +7,10 @@ import (
 	"os"
 	"time"
 
+	"github.com/go-playground/locales/en"
+	ut "github.com/go-playground/universal-translator"
+	"github.com/go-playground/validator/v10"
+	en_translations "github.com/go-playground/validator/v10/translations/en"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
@@ -15,6 +19,8 @@ import (
 	"github.com/rokafela/udemy-banking-auth/logger"
 	"github.com/rokafela/udemy-banking-auth/service"
 )
+
+var validate *validator.Validate
 
 func init() {
 	err := godotenv.Load(".env")
@@ -78,11 +84,31 @@ func Start() {
 	client := createDbPool()
 	userRepositoryDb := domain.NewAuthRepositoryDb(client)
 
+	// validator initialization
+	english := en.New()
+	universal_translator := ut.New(english, english)
+	translator, found := universal_translator.GetTranslator("en")
+	if !found {
+		logger.Fatal("translator not found")
+	}
+	validate = validator.New()
+	register_err := en_translations.RegisterDefaultTranslations(validate, translator)
+	if register_err != nil {
+		logger.Fatal(register_err.Error())
+	}
+	_ = validate.RegisterTranslation("required", translator, func(ut ut.Translator) error {
+		return ut.Add("required", "{0} is a required field", true) // see universal-translator for details
+	}, func(ut ut.Translator, fe validator.FieldError) string {
+		t, _ := ut.T("required", fe.Field())
+		return t
+	})
+
 	// handler initialization
-	uh := AuthHandler{service.NewAuthService(userRepositoryDb)}
+	ah := AuthHandler{service.NewAuthService(userRepositoryDb), validate}
 
 	// routes
-	router.HandleFunc("/login", uh.HandleLogin).Methods(http.MethodPost)
+	router.HandleFunc("/login", ah.HandleLogin).Methods(http.MethodPost)
+	router.HandleFunc("/verify", ah.HandleVerify).Methods(http.MethodPost)
 
 	// server
 	logger.Info(fmt.Sprintf("application listening in %s:%s", os.Getenv("APP_ADDRESS"), os.Getenv("APP_PORT")))

@@ -2,6 +2,7 @@ package domain
 
 import (
 	"database/sql"
+	"time"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/rokafela/udemy-banking-auth/errs"
@@ -10,6 +11,7 @@ import (
 
 type LoginRepository interface {
 	FindUserByCredential(*string, *string) ([]Login, *errs.AppError)
+	SaveToken(*string) *errs.AppError
 }
 
 type AuthRepositoryDb struct {
@@ -40,4 +42,15 @@ func (db AuthRepositoryDb) FindUserByCredential(username *string, password *stri
 		}
 	}
 	return &result, nil
+}
+
+func (db AuthRepositoryDb) SaveToken(token *string) *errs.AppError {
+	insertQuery := `insert into refresh_token_store (refresh_token, created_on) values (?, ?)`
+	tx := db.Client.MustBegin()
+	tx.MustExec(insertQuery, token, time.Now())
+	err := tx.Commit()
+	if err != nil {
+		return errs.NewUnexpectedError("Error while saving token")
+	}
+	return nil
 }
