@@ -9,8 +9,9 @@ import (
 	"github.com/rokafela/udemy-banking-auth/logger"
 )
 
+//go:generate mockgen -destination=../mocks/domain/mockLoginRepository.go -package=domain github.com/rokafela/udemy-banking-auth/domain LoginRepository
 type LoginRepository interface {
-	FindUserByCredential(*string, *string) ([]Login, *errs.AppError)
+	FindUserByCredential(*string, *string) (*Login, *errs.AppError)
 	SaveToken(*string) *errs.AppError
 }
 

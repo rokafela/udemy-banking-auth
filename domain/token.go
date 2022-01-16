@@ -17,10 +17,10 @@ const HMAC_SECRET = "test"
 const ACCESS_TOKEN_DURATION = time.Hour
 
 type AuthTokenClaims struct {
-	Username   string   `json:username`
-	Role       string   `json:role`
-	CustomerId string   `json:customer_id`
-	AccountId  []string `json:account_id`
+	Username   string   `json:"username"`
+	Role       string   `json:"role"`
+	CustomerId string   `json:"customer_id"`
+	AccountId  []string `json:"account_id"`
 	jwt.StandardClaims
 }
 
