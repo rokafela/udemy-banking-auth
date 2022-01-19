@@ -80,15 +80,18 @@ func Start() {
 
 	// repository initialization
 	client := createDbPool()
-	userRepositoryDb := domain.NewAuthRepositoryDb(client)
+	user_repository_db := domain.NewAuthRepositoryDb(client)
+	customer_repository_db := domain.NewCustomerRepositoryDb(client)
 
 	// handler initialization
-	ah := AuthHandler{service.NewAuthService(userRepositoryDb)}
-	// TestAuthHandler = ah
+	auth_service := service.NewAuthService(user_repository_db)
+	auth_handler := AuthHandler{auth_service}
+	registration_handler := RegistrationHandler{service.NewRegistrationService(customer_repository_db), auth_service}
 
 	// routes
-	router.HandleFunc("/login", ah.HandleLogin).Methods(http.MethodPost)
-	router.HandleFunc("/verify", ah.HandleVerify).Methods(http.MethodPost)
+	router.HandleFunc("/login", auth_handler.HandleLogin).Methods(http.MethodPost)
+	router.HandleFunc("/verify", auth_handler.HandleVerify).Methods(http.MethodPost)
+	router.HandleFunc("/register_customer", registration_handler.HandleCustomerRegistration).Methods(http.MethodPost)
 
 	// server
 	logger.Info(fmt.Sprintf("application listening in %s:%s", os.Getenv("APP_ADDRESS"), os.Getenv("APP_PORT")))

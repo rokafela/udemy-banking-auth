@@ -8,7 +8,7 @@ import (
 
 //go:generate mockgen -destination=../mocks/service/mockRegistrationService.go -package=service github.com/rokafela/udemy-banking-auth/service RegistrationService
 type RegistrationService interface {
-	RegisterCustomer(*dto.RegisterCustomerRequest) *errs.AppError
+	RegisterCustomer(*dto.RegisterCustomerRequest) (*int64, *errs.AppError)
 }
 
 type DefaultRegistrationService struct {
@@ -19,4 +19,13 @@ func NewRegistrationService(repo domain.CustomerRepository) DefaultRegistrationS
 	return DefaultRegistrationService{
 		RepoCustomer: repo,
 	}
+}
+
+func (drs DefaultRegistrationService) RegisterCustomer(register_request *dto.RegisterCustomerRequest) (*int64, *errs.AppError) {
+	customer_data := register_request.TransformToCustomer()
+	customer_id, app_error := drs.RepoCustomer.SaveCustomer(&customer_data)
+	if app_error != nil {
+		return nil, app_error
+	}
+	return customer_id, nil
 }
