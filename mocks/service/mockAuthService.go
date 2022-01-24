@@ -9,7 +9,7 @@ import (
 
 	gomock "github.com/golang/mock/gomock"
 	dto "github.com/rokafela/udemy-banking-auth/dto"
-	errs "github.com/rokafela/udemy-banking-auth/errs"
+	errs "github.com/rokafela/udemy-banking-lib/errs"
 )
 
 // MockAuthService is a mock of AuthService interface.

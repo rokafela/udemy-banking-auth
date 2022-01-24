@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/rokafela/udemy-banking-auth/errs"
-	"github.com/rokafela/udemy-banking-auth/logger"
+	"github.com/rokafela/udemy-banking-lib/errs"
+	"github.com/rokafela/udemy-banking-lib/logger"
 )
 
 type AuthToken struct {

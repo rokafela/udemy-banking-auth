@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/rokafela/udemy-banking-auth/errs"
-	"github.com/rokafela/udemy-banking-auth/logger"
+	"github.com/rokafela/udemy-banking-lib/errs"
+	"github.com/rokafela/udemy-banking-lib/logger"
 )
 
 //go:generate mockgen -destination=../mocks/domain/mockLoginRepository.go -package=domain github.com/rokafela/udemy-banking-auth/domain LoginRepository

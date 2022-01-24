@@ -4,8 +4,8 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/rokafela/udemy-banking-auth/domain"
 	"github.com/rokafela/udemy-banking-auth/dto"
-	"github.com/rokafela/udemy-banking-auth/errs"
-	"github.com/rokafela/udemy-banking-auth/logger"
+	"github.com/rokafela/udemy-banking-lib/errs"
+	"github.com/rokafela/udemy-banking-lib/logger"
 )
 
 type DefaultAuthService struct {

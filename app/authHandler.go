@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	"github.com/rokafela/udemy-banking-auth/dto"
-	"github.com/rokafela/udemy-banking-auth/logger"
 	"github.com/rokafela/udemy-banking-auth/service"
 	"github.com/rokafela/udemy-banking-auth/validation"
+	"github.com/rokafela/udemy-banking-lib/logger"
 )
 
 type AuthHandler struct {

@@ -9,7 +9,7 @@ import (
 
 	gomock "github.com/golang/mock/gomock"
 	domain "github.com/rokafela/udemy-banking-auth/domain"
-	errs "github.com/rokafela/udemy-banking-auth/errs"
+	errs "github.com/rokafela/udemy-banking-lib/errs"
 )
 
 // MockLoginRepository is a mock of LoginRepository interface.

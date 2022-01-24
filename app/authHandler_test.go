@@ -11,8 +11,8 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/gorilla/mux"
 	"github.com/rokafela/udemy-banking-auth/dto"
-	"github.com/rokafela/udemy-banking-auth/errs"
 	"github.com/rokafela/udemy-banking-auth/mocks/service"
+	"github.com/rokafela/udemy-banking-lib/errs"
 )
 
 var mockAuthHandler AuthHandler
@@ -230,8 +230,8 @@ func Test_login_gagal(t *testing.T) {
 	mockRouter.ServeHTTP(recorder, request)
 
 	// ----- Assert -----
-	// cek http status code 403
-	if recorder.Code != http.StatusForbidden {
+	// cek http status code 401
+	if recorder.Code != http.StatusUnauthorized {
 		t.Error("Failed while testing the status code")
 	}
 
@@ -242,7 +242,7 @@ func Test_login_gagal(t *testing.T) {
 	}
 
 	// cek status code di dalam response body
-	if dummy_login_response.Code != http.StatusForbidden {
+	if dummy_login_response.Code != http.StatusUnauthorized {
 		t.Error("Failed while testing the response code")
 	}
 }
